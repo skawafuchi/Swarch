@@ -23,7 +23,7 @@ public class LoginScript: MonoBehaviour {
 		
 		
 		//Initialize pw and user name to avoid null pointer
-		password = userName = "";	
+		password = userName = "Default";	
 	}
 	
 	void OnGUI () {
