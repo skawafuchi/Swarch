@@ -41,6 +41,7 @@ public class Player : MonoBehaviour {
 	{
 		if(collision.gameObject.name == "MicroscopeSlide")
 		{
+			print("No longer in contact with " + collision.transform.name);
 			process.score = 0;
 			transform.position = new Vector3(Random.Range (2,25),Random.Range (-18,18),0);
 			size = 0.20f;
