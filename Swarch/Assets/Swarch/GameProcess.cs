@@ -23,6 +23,10 @@ public class GameProcess : MonoBehaviour {
 			//sets the name of the pellet to the number of the pellet for easier collision detection (SEE PLAYER.CS)
 			pellets[i].name = i.ToString();
 			pellets[i].transform.position = new Vector3(Random.Range (-2,18),Random.Range (-10,10),0);
+			while(!Player.IsThisPointWithinBounds(pellets[i].transform.position))
+			{
+				pellets[i].transform.position = new Vector3(Random.Range (-2,18),Random.Range (-10,10),0);
+			}
 			
 			//Make outer membrane of pellets
 			pelletShadows[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);

@@ -5,12 +5,25 @@ public class Player : MonoBehaviour {
 	int xdir, ydir;
 	float size;
 	GameProcess process;
-	
+	Vector3[] colliderVertices = new Vector3[8]; 
+	public static float slideX, slideY;
 	
 	void Start () {
 		process = GameObject.Find("GameProcess").GetComponent<GameProcess>();
 		size = 0.2f;	
 		transform.position = new Vector3(Random.Range (2,25),Random.Range (-18,18),0);
+		
+		colliderVertices[0] = collider.bounds.min;
+		colliderVertices[1] = collider.bounds.max;
+		colliderVertices[2] = new Vector3(colliderVertices[0].x, colliderVertices[0].y, colliderVertices[1].z);
+		colliderVertices[3] = new Vector3(colliderVertices[0].x, colliderVertices[1].y, colliderVertices[0].z);
+		colliderVertices[4] = new Vector3(colliderVertices[1].x, colliderVertices[0].y, colliderVertices[0].z);
+		colliderVertices[5] = new Vector3(colliderVertices[0].x, colliderVertices[1].y, colliderVertices[1].z);
+		colliderVertices[6] = new Vector3(colliderVertices[1].x, colliderVertices[0].y, colliderVertices[1].z);
+		colliderVertices[7] = new Vector3(colliderVertices[1].x, colliderVertices[1].y, colliderVertices[0].z);
+		
+		slideX = GameObject.Find("MicroscopeSlide").transform.renderer.bounds.center.x;
+		slideY = GameObject.Find("MicroscopeSlide").transform.renderer.bounds.center.y;
 	}
 	
 	// Update is called once per frame
@@ -37,28 +50,37 @@ public class Player : MonoBehaviour {
 	//Currently checks if player has completely exited the circular bounds of the slide; 
 	//need to find a way to check if a point of the player's Box Collider is not contained
 	//within the slide's Capsule Collider.
-	void OnCollisionExit(Collision collision)
+	void OnTriggerExit(Collider otherCollider)
 	{
-		if(collision.gameObject.name == "MicroscopeSlide")
+		if(otherCollider.gameObject.name == "MicroscopeSlide")
 		{
-			print("No longer in contact with " + collision.transform.name);
+			print("No longer in contact with " + otherCollider.transform.name);
 			process.score = 0;
-			transform.position = new Vector3(Random.Range (2,25),Random.Range (-18,18),0);
+			transform.position = new Vector3(Random.Range (-2,18),Random.Range (-10,10),0);
+			while(!IsThisPointWithinBounds(transform.position))
+			{
+				transform.position = new Vector3(Random.Range (-2,18),Random.Range (-10,10),0);
+			}
 			size = 0.20f;
 			transform.localScale = new Vector3(1,1,1);
 		}
 	}
 	
-//	void OnCollisionStay(Collision collision)
+//	void OnTriggerStay(Collider otherCollider)
 //	{
-//		if(collision.gameObject.name == "MicroscopeSlide")
+//		if(otherCollider.gameObject.name == "MicroscopeSlide")
 //		{
-//			if(collision.collider.bounds.Intersects(collider.bounds))
+//			
+//			for(int i = 0; i < 8; i++)
 //			{
-//				process.score = 0;
-//				transform.position = new Vector3(Random.Range (2,25),Random.Range (-18,18),0);
-//				size = 0.20f;
-//				transform.localScale = new Vector3(1,1,1);
+//				if(!IsThisPointWithinBounds(colliderVertices[i]))
+//				{
+//					print("Math rules!");
+//					process.score = 0;
+//					transform.position = new Vector3(Random.Range (-2,18),Random.Range (-10,10),0);
+//					size = 0.20f;
+//					transform.localScale = new Vector3(1,1,1);
+//				}
 //			}
 //		}
 //	}
@@ -80,8 +102,19 @@ public class Player : MonoBehaviour {
 			
 			//Moves pellet that was hit to a new position
 			process.pellets[int.Parse(collision.gameObject.name)].transform.position = new Vector3(Random.Range (-2,18),Random.Range (-10,10),0);
+			while(!IsThisPointWithinBounds(process.pellets[int.Parse(collision.gameObject.name)].transform.position))
+			{
+				print ("Generating new position");
+				process.pellets[int.Parse(collision.gameObject.name)].transform.position = new Vector3(Random.Range (-2,18),Random.Range (-10,10),0);
+			}
 			process.pelletShadows[int.Parse(collision.gameObject.name)].transform.position = process.pellets[int.Parse(collision.gameObject.name)].transform.position;
 		}
 	}
-	
+				
+	public static bool IsThisPointWithinBounds(Vector3 vector)
+	{
+		if((Mathf.Pow((vector.x - slideX),2f) + Mathf.Pow((vector.y - slideY),2f)) < 400)
+			return true;
+		return false;
+	}
 }
