@@ -1,3 +1,7 @@
+//Steven Kawafuchi
+//Tamara Sahagun
+//ICS 168 Multi-Player Game Project
+
 using UnityEngine;
 using System.Collections;
 
