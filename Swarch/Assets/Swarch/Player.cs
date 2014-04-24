@@ -9,7 +9,6 @@ public class Player : MonoBehaviour {
 	int xdir, ydir;
 	float size;
 	GameProcess process;
-	Vector3[] colliderVertices = new Vector3[8]; 
 	public static float slideX, slideY;
 	public static Vector3 slideCenter;
 	
@@ -43,15 +42,7 @@ public class Player : MonoBehaviour {
 			xdir = 1;
 			ydir = 0;
 		}	
-		
-		colliderVertices[0] = collider.bounds.min;
-		colliderVertices[1] = collider.bounds.max;
-		colliderVertices[2] = new Vector3(colliderVertices[0].x, colliderVertices[0].y, colliderVertices[1].z);
-		colliderVertices[3] = new Vector3(colliderVertices[0].x, colliderVertices[1].y, colliderVertices[0].z);
-		colliderVertices[4] = new Vector3(colliderVertices[1].x, colliderVertices[0].y, colliderVertices[0].z);
-		colliderVertices[5] = new Vector3(colliderVertices[0].x, colliderVertices[1].y, colliderVertices[1].z);
-		colliderVertices[6] = new Vector3(colliderVertices[1].x, colliderVertices[0].y, colliderVertices[1].z);
-		colliderVertices[7] = new Vector3(colliderVertices[1].x, colliderVertices[1].y, colliderVertices[0].z);
+
 	}
 	
 	void OnCollisionEnter(Collision collision) {
