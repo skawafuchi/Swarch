@@ -42,7 +42,11 @@ public class Player : MonoBehaviour {
 			xdir = 1;
 			ydir = 0;
 		}	
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> 9609bf79c14e6fe20ed10342c998a13f78ea71b1
 	}
 	
 	void OnCollisionEnter(Collision collision) {
