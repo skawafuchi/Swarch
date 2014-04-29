@@ -1,0 +1,25 @@
+C:\Users\skawafuc\Desktop\Server\Server\bin\Debug\Server.exe
+C:\Users\skawafuc\Desktop\Server\Server\bin\Debug\Server.pdb
+C:\Users\skawafuc\Desktop\Server\Server\obj\x86\Debug\Server.exe
+C:\Users\skawafuc\Desktop\Server\Server\obj\x86\Debug\Server.pdb
+C:\Users\skawafuc\Desktop\Server\Server\obj\x86\Debug\Server.csprojResolveAssemblyReference.cache
+C:\Users\sk\Desktop\Server\Server\obj\x86\Debug\Server.exe
+C:\Users\sk\Desktop\Server\Server\obj\x86\Debug\Server.pdb
+C:\Users\sk\Desktop\Server\Server\bin\Debug\Server.exe
+C:\Users\sk\Desktop\Server\Server\bin\Debug\Server.pdb
+C:\Users\sk\Desktop\Server\Server\obj\x86\Debug\Server.csprojResolveAssemblyReference.cache
+C:\Users\sk\Documents\GitHub\Swarch\Server\Server\obj\x86\Debug\Server.exe
+C:\Users\sk\Documents\GitHub\Swarch\Server\Server\obj\x86\Debug\Server.pdb
+<<<<<<< HEAD
+C:\Users\sk\Documents\GitHub\Swarch\Server\Server\bin\Debug\Server.exe
+C:\Users\sk\Documents\GitHub\Swarch\Server\Server\bin\Debug\Server.pdb
+C:\Users\sk\Documents\GitHub\Swarch\Server\Server\obj\x86\Debug\Server.csprojResolveAssemblyReference.cache
+=======
+C:\Users\sk\Documents\GitHub\Server\Server\obj\x86\Debug\Server.exe
+C:\Users\sk\Documents\GitHub\Server\Server\obj\x86\Debug\Server.pdb
+C:\Users\sk\Documents\GitHub\Server\Server\bin\Debug\Server.exe
+C:\Users\sk\Documents\GitHub\Server\Server\bin\Debug\Server.pdb
+C:\Users\sk\Documents\GitHub\Server\Server\obj\x86\Debug\Server.csprojResolveAssemblyReference.cache
+>>>>>>> 260c4ece0a0cf08c736202f837731a31f5efc558
+C:\Users\sk\Desktop\SWARCHTEMP\Server\Server\obj\x86\Debug\Server.exe
+C:\Users\sk\Desktop\SWARCHTEMP\Server\Server\obj\x86\Debug\Server.pdb
