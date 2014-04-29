@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bacteria.cs" />
     <Compile Include="Phagocyte.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="myMain.cs" />
