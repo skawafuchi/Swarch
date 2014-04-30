@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Data.SQLite;
 
 namespace Server
 {
@@ -74,6 +75,24 @@ namespace Server
                             string strUN = Encoding.ASCII.GetString(userName);
                             string strPW = Encoding.ASCII.GetString(password);
                             Console.WriteLine("username: " + strUN + "password: " + strPW);
+
+                            //For now, add player to table without checking
+                            //Password will not be encrypted yet
+                            string sql = "INSERT INTO playerData (username, password, score) VALUES (@username, @password, 0)";
+                            SQLiteCommand command = new SQLiteCommand(sql, Server.p_dbConnection);
+                            command.Parameters.AddWithValue("@username", strUN);
+                            command.Parameters.AddWithValue("@password", strPW);
+                            command.ExecuteNonQuery();
+
+                            //Print out table for testing
+                            sql = "SELECT * FROM playerData";
+                            command = new SQLiteCommand(sql, Server.p_dbConnection);
+                            SQLiteDataReader reader = command.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                Console.WriteLine("Username: " + reader["username"] + " | Password: " 
+                                    + reader["password"] + " | Score: " + reader["score"]);
+                            }
 
                             //Check to see if database
                             //NEEDS IMPLEMENTATION

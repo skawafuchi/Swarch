@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Timers;
+using System.Data.SQLite;
 
 namespace Server
 {
@@ -27,10 +28,23 @@ namespace Server
         List<Phagocyte> clients;
         Random randGen = new Random();
         public static List<Point> pellets;
-
+        public static SQLiteConnection p_dbConnection;
 
         public Server(int port)
         {
+            //Create database file
+            SQLiteConnection.CreateFile("PhagocyteDatabase.sqlite");
+
+            //Open connection to database
+            p_dbConnection = new SQLiteConnection("Data Source=PhagocyteDatabase.sqlite;Version=3;");
+            p_dbConnection.Open();
+
+            //Create table
+            //For now, password will not be encrypted
+            string sql = "CREATE TABLE playerData (username VARCHAR(20), password VARCHAR(20), score INT)";
+            SQLiteCommand command = new SQLiteCommand(sql, p_dbConnection);
+            command.ExecuteNonQuery();
+
             listen = new TcpListener(IPAddress.Any, port);
             listenLoop = new Thread(new ThreadStart(addClient));
             listenLoop.Start();
