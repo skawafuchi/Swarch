@@ -41,7 +41,7 @@ namespace Server
 
             //Create table
             //For now, password will not be encrypted
-            string sql = "CREATE TABLE playerData (username VARCHAR(20), password VARCHAR(20), score INT)";
+            string sql = "CREATE TABLE playerData (username VARCHAR(20), password CHAR(32), score INT)";
             SQLiteCommand command = new SQLiteCommand(sql, p_dbConnection);
             command.ExecuteNonQuery();
 

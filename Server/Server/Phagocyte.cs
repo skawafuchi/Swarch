@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Data.SQLite;
+using System.Security.Cryptography;
 
 namespace Server
 {
@@ -19,7 +20,7 @@ namespace Server
 
         byte[] read;
         int msgSize;
-
+        MD5 baseHash = MD5.Create();
 
         public Phagocyte(object player)
         {
@@ -84,60 +85,50 @@ namespace Server
                             //currently always allowing players to access
 
                             //Check to see if player is in database
-                            Console.WriteLine("1");
                             string sql = "SELECT COUNT(*) FROM playerData WHERE username=@username";
-                            Console.WriteLine("2");
                             SQLiteCommand command = new SQLiteCommand(sql, Server.p_dbConnection);
-                            Console.WriteLine("3");
                             command.Parameters.AddWithValue("@username", strUN);
-                            Console.WriteLine("4");
                             int count = Convert.ToInt32(command.ExecuteScalar());
-                            Console.WriteLine("match = " + count);
-                            if (count > 0)
+                            if (count > 0) //If in database,
                             {
-                                Console.WriteLine("Checking...");
                                 //Check if passwords match
                                 string compare = "";
                                 sql = "SELECT password FROM playerData WHERE username=@username";
                                 command = new SQLiteCommand(sql, Server.p_dbConnection);
                                 command.Parameters.AddWithValue("@username", strUN);
-                                Console.WriteLine("5");
-                                SQLiteDataReader reader2 = command.ExecuteReader();
-                                Console.WriteLine("6");
-                                while (reader2.Read())
+                                SQLiteDataReader reader = command.ExecuteReader();
+                                while (reader.Read())
                                 {
-                                    Console.WriteLine("7");
-                                    compare = (string)reader2["password"];
-                                    Console.WriteLine("8");
-                                    
+                                    compare = (string)reader["password"];   
                                 }
-                                Console.WriteLine("strPw = " + strPW + "| compare = " + compare);
-                                if (strPW.Equals(compare))
+                                if (VerifyMd5Hash(baseHash, strPW, compare))
                                 {
                                     toSend[1] = 1;
                                 }
                                 else
                                 {
+                                    //Print a message on Unity executable!
+                                    //For now just print to server console
                                     Console.WriteLine("Please enter the correct password.");
                                 }
                             }
                             else //Add player to table
                             {
-                                //Password will not be encrypted yet
                                 sql = "INSERT INTO playerData (username, password, score) VALUES (@username, @password, 0)";
                                 command = new SQLiteCommand(sql, Server.p_dbConnection);
                                 command.Parameters.AddWithValue("@username", strUN);
-                                command.Parameters.AddWithValue("@password", strPW);
+                                string pwHash = GetMd5Hash(baseHash, strPW);
+                                command.Parameters.AddWithValue("@password", pwHash);
                                 command.ExecuteNonQuery();
 
                                 //Print out table for testing
                                 sql = "SELECT * FROM playerData";
                                 command = new SQLiteCommand(sql, Server.p_dbConnection);
-                                SQLiteDataReader reader3 = command.ExecuteReader();
-                                while (reader3.Read())
+                                SQLiteDataReader reader = command.ExecuteReader();
+                                while (reader.Read())
                                 {
-                                    Console.WriteLine("Username: " + reader3["username"] + " | Password: "
-                                        + reader3["password"] + " | Score: " + reader3["score"]);
+                                    Console.WriteLine("Username: " + reader["username"] + " | Password: "
+                                        + reader["password"] + " | Score: " + reader["score"]);
                                 }
 
                                 toSend[1] = 1;
@@ -173,6 +164,45 @@ namespace Server
             }
         }
 
+        //The following 2 methods were taken straight from the documentation
+        static string GetMd5Hash(MD5 md5Hash, string input)
+        {
 
+            // Convert the input string to a byte array and compute the hash. 
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes 
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data  
+            // and format each one as a hexadecimal string. 
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // Return the hexadecimal string. 
+            return sBuilder.ToString();
+        }
+
+        // Verify a hash against a string. 
+        static bool VerifyMd5Hash(MD5 md5Hash, string input, string hash)
+        {
+            // Hash the input. 
+            string hashOfInput = GetMd5Hash(md5Hash, input);
+
+            // Create a StringComparer an compare the hashes.
+            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+            if (0 == comparer.Compare(hashOfInput, hash))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
