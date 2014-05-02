@@ -10,13 +10,15 @@ public class GameProcess : MonoBehaviour {
 	public GameObject []pelletShadows = new GameObject[5];
 	public int score;
 	myNetwork net;
+	Player myP;
 	
+	public int pNum;
 	string myName = LoginScript.userName;
 	GUIText pName,title,scoreText;
 	byte[]currentData;
 	
 	void Start () {
-		
+		pNum = -1;
 		net = LoginScript.net;
 		
 		//create pellets
@@ -37,6 +39,7 @@ public class GameProcess : MonoBehaviour {
 			pelletShadows[i].transform.localScale = new Vector3(1f,1f,1f);
 		}
 		
+		myP = GameObject.Find("Player").GetComponent<Player>();
 		//sets up game variables
 		score = 0;
 		
@@ -62,6 +65,15 @@ public class GameProcess : MonoBehaviour {
 		scoreText.text = "Score: " + score;
 	}
 	
+    public static byte[] toByteArray(float value){
+        byte[] bytes =System.BitConverter.GetBytes(value);
+        return bytes;
+    }
+
+    public static float toFloat(byte[] bytes){
+        return System.BitConverter.ToSingle(bytes, 0);
+    }
+	
 	void Update(){
 		lock (net.data){
 			if (net.data.Count > 0){
@@ -70,15 +82,57 @@ public class GameProcess : MonoBehaviour {
 				if (currentData[0] == 0){
 					//Was accepted
 					if (currentData[1] == 1){
-						int counter = 0;
+						pNum = currentData[2];			
+
 						//gets pellet positions from server
-						for (int i = 2; i <= 10; i+=2){
-							pellets[i-(2+counter)].transform.position = new Vector3((float)(currentData[i]-2),(float)(currentData[i+1]-10),0);
-							pelletShadows[i-(2+counter)].transform.position = pellets[i-(2+counter)].transform.position;
+						int counter = 0;
+						for (int i = 3; i <= 11; i+=2){
+							pellets[i-(3+counter)].transform.position = new Vector3((float)(currentData[i]-2),(float)(currentData[i+1]-10),0);
+							pelletShadows[i-(3+counter)].transform.position = pellets[i-(3+counter)].transform.position;
 							counter++;
+							print ("NEW POINT: ");
 						}
+						byte[] posCoord = new byte[4];
+						System.Buffer.BlockCopy(currentData,13,posCoord,0,4);
+
+						float x = toFloat (posCoord);			
+						System.Buffer.BlockCopy(currentData,17,posCoord,0,4);
+						float y = toFloat (posCoord);
+						myP.transform.position = new Vector3(x,y,0);
 					}
 					
+				//Move Command from the player
+				}else if (currentData[0] == 1){
+					if (currentData[2] == 0){
+						myP.xdir = 0;
+						myP.ydir = 1;
+					}else if (currentData[2] == 1){
+						myP.xdir = 0;
+						myP.ydir = -1;
+					}else if (currentData[2] == 2){
+						myP.xdir = -1;
+						myP.ydir = 0;
+					}else if (currentData[2] == 3){
+						myP.xdir = 1;
+						myP.ydir = 0;
+					}
+					byte[] posCoord = new byte[4];
+					System.Buffer.BlockCopy(currentData,3,posCoord,0,4);
+
+					float x = toFloat (posCoord);			
+					System.Buffer.BlockCopy(currentData,7,posCoord,0,4);
+					float y = toFloat (posCoord);
+					myP.transform.position = new Vector3(x,y,0);
+					
+				//Player Died Command
+				}else if (currentData[0] == 2){
+					
+					byte[] posCoord = new byte[4];
+					System.Buffer.BlockCopy(currentData,2,posCoord,0,4);
+					float x = toFloat (posCoord);			
+					System.Buffer.BlockCopy(currentData,6,posCoord,0,4);
+					float y = toFloat (posCoord);
+					myP.transform.position = new Vector3(x,y,0);
 				}
 			}
 		}

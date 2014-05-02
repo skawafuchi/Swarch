@@ -52,20 +52,27 @@ public class LoginScript: MonoBehaviour {
 			Application.LoadLevel("Swarch");
 		}
 		
+		if (!net.connected){
+			if (GUI.Button (new Rect(Screen.width/2 - 50,Screen.height/2 +40,100,20),"Connect!")){
+				net.Connect();
+			}
+		}
 		
 		//login button, changes scenes to Swarch Game
-		if (GUI.Button(new Rect(Screen.width/2 - 50,Screen.height/2 +10,100,20),"Login!")){
-			if (password.Length > 5 && userName.Length > 5){
-				byte[]toSend = new byte[50];
-				
-				//Encode username and password into a byte array
-				//username and PW separated by a 0 in the byte stream
-				System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (userName),0,toSend,1,Encoding.ASCII.GetBytes(userName).Length);
-				System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (password),0,toSend,(Encoding.ASCII.GetBytes(userName).Length)+ 2,Encoding.ASCII.GetBytes(password).Length);
-				net.SendTCPPacket(toSend,0,toSend.Length);
-			}else{
-				errMsg = "Username/PW invalid";
-				GUI.Label(new Rect(0,0,100,100),errMsg);
+		if (net.connected){
+			if (GUI.Button(new Rect(Screen.width/2 - 50,Screen.height/2 +10,100,20),"Login!")){
+				if (password.Length > 5 && userName.Length > 5){
+					byte[]toSend = new byte[50];
+					
+					//Encode username and password into a byte array
+					//username and PW separated by a 0 in the byte stream
+					System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (userName),0,toSend,1,Encoding.ASCII.GetBytes(userName).Length);
+					System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (password),0,toSend,(Encoding.ASCII.GetBytes(userName).Length)+ 2,Encoding.ASCII.GetBytes(password).Length);
+					net.SendTCPPacket(toSend,0,toSend.Length);
+				}else{
+					errMsg = "Username/PW invalid";
+					GUI.Label(new Rect(0,0,100,100),errMsg);
+				}
 			}
 		}
 		

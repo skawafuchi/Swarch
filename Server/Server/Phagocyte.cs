@@ -12,17 +12,20 @@ namespace Server
 {
     class Phagocyte
     {
-        public double radius, xpos, ypos;
+        //Game variables
+        public string clientName;
+        public float radius, xpos, ypos;
+        public int xDir, yDir, score, myPNum;
+
+        //Network information
         TcpClient myPlayer;
         NetworkStream netStream;
         Thread readWrite;
-        int xDir, yDir, score;
-
         byte[] read;
         int msgSize;
         MD5 baseHash = MD5.Create();
 
-        public Phagocyte(object player)
+        public Phagocyte(object player, int pNum, int startX, int startY)
         {
             myPlayer = (TcpClient)player;
             netStream = myPlayer.GetStream();
@@ -32,18 +35,54 @@ namespace Server
 
             read = new byte[50];
             xDir = yDir = 0;
-
-        }
-
-        public void resetPlayer()
-        {
+            xpos = startX;
+            ypos = startY;
 
         }
 
         public void move()
         {
-            xpos += xDir;
-            ypos += yDir;
+            xpos += xDir * 0.2f;
+            ypos += yDir * 0.2f;
+        }
+
+        public static byte[] toByteArray(float value)
+        {
+            byte[] bytes = System.BitConverter.GetBytes(value);
+            return bytes;
+        }
+
+        public static float toFloat(byte[] bytes)
+        {
+            return System.BitConverter.ToSingle(bytes, 0);
+        }
+
+
+        public void sendMsg(byte[] msg)
+        {
+            try
+            {
+                netStream.Write(msg, 0, 50);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unable to write message to client: " + myPNum);
+            }
+        }
+
+        public void resetPlayer()
+        {
+            //Resets player position, their score, and broadcasts their death to the players
+            xpos = Server.randGen.Next(-2, 18);
+            ypos = Server.randGen.Next(-10, 10);
+            score = 0;
+
+            byte[] toSend = new Byte[50];
+            toSend[0] = 2;
+            toSend[1] = (byte)myPNum;
+            System.Buffer.BlockCopy(toByteArray(xpos), 0, toSend, 2, 4);
+            System.Buffer.BlockCopy(toByteArray(ypos), 0, toSend, 6, 4);
+            Server.broadcast(toSend);
         }
 
         private void readWriteLoop()
@@ -138,21 +177,61 @@ namespace Server
                             if (toSend[1] == 1)
                             {
                                 int counter = 0;
-                                for (int i = 2; i <= Server.pellets.Count * 2; i += 2)
+                                for (int i = 3; i <= 11; i += 2)
                                 {
-                                    toSend[i] = (byte)(Server.pellets[i - (2 + counter)].x);
-                                    toSend[i + 1] = (byte)(Server.pellets[i - (2 + counter)].y);
+                                    toSend[i] = (byte)(Server.pellets[i - (3 + counter)].x + 2);
+                                    toSend[i + 1] = (byte)(Server.pellets[i - (3 + counter)].y + 10);
                                     counter++;
                                 }
 
-                                netStream.Write(toSend, 0, 50);
+                                //sends player position with hello command
+                                System.Buffer.BlockCopy(toByteArray(xpos), 0, toSend, 13, 4);
+                                System.Buffer.BlockCopy(toByteArray(ypos), 0, toSend, 17, 4);
                             }
+                            netStream.Write(toSend, 0, 50);
                         }
                         //first byte is a 1 then it's a move command
                         else if (read[0] == 1)
                         {
-                            xDir = (int)read[1];
-                            yDir = (int)read[2];
+                            byte[] toSend = new byte[50];
+                            if (read[2] == 0)
+                            {
+                                xDir = 0;
+                                yDir = 1;
+                            }
+                            else if (read[2] == 1)
+                            {
+                                xDir = 0;
+                                yDir = -1;
+                            }
+                            else if (read[2] == 2)
+                            {
+                                xDir = -1;
+                                yDir = 0;
+                            }
+                            else if (read[2] == 3)
+                            {
+                                xDir = 1;
+                                yDir = 0;
+                            }
+
+                            toSend[0] = 1;
+                            toSend[1] = (byte)myPNum;
+                            toSend[2] = read[2];
+                            byte[] byteCoord = (toByteArray(xpos));
+                            //Console.WriteLine("Byte Array Length" + byteXPos.Length);
+                            toSend[3] = byteCoord[0];
+                            toSend[4] = byteCoord[1];
+                            toSend[5] = byteCoord[2];
+                            toSend[6] = byteCoord[3];
+
+                            byteCoord = toByteArray(ypos);
+                            toSend[7] = byteCoord[0];
+                            toSend[8] = byteCoord[1];
+                            toSend[9] = byteCoord[2];
+                            toSend[10] = byteCoord[3];
+                            //send the player move to all clients!
+                            Server.broadcast(toSend);
                         }
                     }
                     catch
