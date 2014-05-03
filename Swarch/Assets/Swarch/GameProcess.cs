@@ -37,6 +37,7 @@ public class GameProcess : MonoBehaviour {
 			pelletShadows[i].renderer.material.color = new Color(105f,50f,255f,0.5f);
 			pelletShadows[i].renderer.material.shader = Shader.Find("Transparent/Diffuse");
 			pelletShadows[i].transform.localScale = new Vector3(1f,1f,1f);
+			//pelletShadows[i]
 		}
 		
 		myP = GameObject.Find("Player").GetComponent<Player>();
@@ -90,7 +91,6 @@ public class GameProcess : MonoBehaviour {
 							pellets[i-(3+counter)].transform.position = new Vector3((float)(currentData[i]-2),(float)(currentData[i+1]-10),0);
 							pelletShadows[i-(3+counter)].transform.position = pellets[i-(3+counter)].transform.position;
 							counter++;
-							print ("NEW POINT: ");
 						}
 						byte[] posCoord = new byte[4];
 						System.Buffer.BlockCopy(currentData,13,posCoord,0,4);
@@ -133,6 +133,24 @@ public class GameProcess : MonoBehaviour {
 					System.Buffer.BlockCopy(currentData,6,posCoord,0,4);
 					float y = toFloat (posCoord);
 					myP.transform.position = new Vector3(x,y,0);
+					myP.transform.localScale = new Vector3(1,1,1);
+					myP.radius = 0;
+				//Player ate pellet command
+				}else if (currentData[0] == 3){
+					score = currentData[2];
+					//gets pellet positions from server
+					int counter = 0;
+					myP.radius = (int) currentData[3];
+					myP.transform.localScale = new Vector3((Mathf.Pow(1.2f,myP.radius)),(Mathf.Pow(1.2f,myP.radius)),0);
+
+					for (int i = 4; i <= 12; i+=2){
+						
+						pellets[i-(4+counter)].transform.position = new Vector3((float)(currentData[i]-2),(float)(currentData[i+1]-10),0);
+						pelletShadows[i-(4+counter)].transform.position = pellets[i-(4+counter)].transform.position;
+						//print ("Point "+(i-(4+counter)) +" at: " + pellets[i-(4+counter)].transform.position);
+						counter++;
+
+					}
 				}
 			}
 		}

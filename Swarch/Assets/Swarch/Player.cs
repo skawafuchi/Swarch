@@ -6,8 +6,7 @@ using UnityEngine;
 using System.Collections;
 
 public class Player : MonoBehaviour {
-	public int xdir, ydir;
-	float size;
+	public int xdir, ydir, radius;
 	GameProcess process;
 	myNetwork net;
 	public static float slideX, slideY;
@@ -16,7 +15,7 @@ public class Player : MonoBehaviour {
 	void Start () {
 		process = GameObject.Find("GameProcess").GetComponent<GameProcess>();
 		net = LoginScript.net;
-		size = 0.2f;	
+		
 		transform.position = new Vector3(Random.Range (-2,18),Random.Range (-10,10),0);
 		
 		slideCenter = GameObject.Find("MicroscopeSlide").transform.renderer.bounds.center;
@@ -29,7 +28,7 @@ public class Player : MonoBehaviour {
 		//print ("");
 		//movement (speed determined by size)
 		//transform.Translate(new Vector3(xdir*size,ydir*size,0));
-		transform.Translate (new Vector3(xdir*0.2f,ydir*0.2f,0));
+		transform.Translate (new Vector3(xdir*0.2f * Mathf.Pow(0.75f,(float)radius),ydir*0.2f* Mathf.Pow(0.75f,(float)radius),0));
 		//changes direction of player based on button they pressed
 		if (process.pNum != -1){
 			toSend = new byte[50];

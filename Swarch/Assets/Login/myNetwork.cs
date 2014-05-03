@@ -54,11 +54,14 @@ public class myNetwork : MonoBehaviour {
 			while (true){
 				if (nws.DataAvailable){
 					nws.Read(readData,0,50);
-					data.Enqueue(readData);
+					lock(data){
+						data.Enqueue(readData);
+					}
 					//flag to switch scenes
 					if (readData[0] == 0 && readData[1] == 1){
 						serverAppr = true;
 					}
+					readData = new byte[50];
 				}
 				
 			}

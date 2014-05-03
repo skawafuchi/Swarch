@@ -1,12 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Swarch\Player.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Swarch\GameProcess.cs">
     <Files>
-      <File FileName="Assets\Login\myNetwork.cs" Line="14" Column="41" />
-      <File FileName="Assets\Login\LoginScript.cs" Line="17" Column="16" />
-      <File FileName="Assets\Swarch\GameProcess.cs" Line="1" Column="1" />
+      <File FileName="Assets\Swarch\GameProcess.cs" Line="137" Column="21" />
       <File FileName="Assets\Swarch\Nucleus.cs" Line="1" Column="1" />
-      <File FileName="Assets\Swarch\Player.cs" Line="1" Column="1" />
+      <File FileName="Assets\Swarch\Player.cs" Line="26" Column="2" />
+      <File FileName="Assets\Login\myNetwork.cs" Line="1" Column="1" />
+      <File FileName="Assets\Login\LoginScript.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

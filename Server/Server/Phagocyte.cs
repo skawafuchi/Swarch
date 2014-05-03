@@ -27,6 +27,7 @@ namespace Server
 
         public Phagocyte(object player, int pNum, int startX, int startY)
         {
+            myPNum = pNum;
             myPlayer = (TcpClient)player;
             netStream = myPlayer.GetStream();
 
@@ -37,44 +38,49 @@ namespace Server
             xDir = yDir = 0;
             xpos = startX;
             ypos = startY;
-
+            radius = 0;
         }
 
+
+        //Helper class that moves the player based on how big he/she is
         public void move()
         {
-            xpos += xDir * 0.2f;
-            ypos += yDir * 0.2f;
+            xpos += xDir * 0.2f * (float)Math.Pow(0.75, radius);
+            ypos += yDir * 0.2f * (float)Math.Pow(0.75, radius);
         }
 
+        //helper class that converts a floating point decimal into a byte array
         public static byte[] toByteArray(float value)
         {
             byte[] bytes = System.BitConverter.GetBytes(value);
             return bytes;
         }
 
+        //Helper class that converts a byte array (length 4) to a floating point decimal
         public static float toFloat(byte[] bytes)
         {
             return System.BitConverter.ToSingle(bytes, 0);
         }
 
-
+        //Sends specified message to this client
         public void sendMsg(byte[] msg)
         {
             try
             {
                 netStream.Write(msg, 0, 50);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Console.WriteLine("Unable to write message to client: " + myPNum);
             }
         }
-
+        
+        //Resets player position, their score, and broadcasts their death to the players
         public void resetPlayer()
         {
-            //Resets player position, their score, and broadcasts their death to the players
             xpos = Server.randGen.Next(-2, 18);
             ypos = Server.randGen.Next(-10, 10);
+            radius = 0;
             score = 0;
 
             byte[] toSend = new Byte[50];
