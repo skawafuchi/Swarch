@@ -26,7 +26,8 @@ namespace Server
         private TcpListener listen;
         Thread listenLoop;
         List<int> removedPlayers;
-        public static Dictionary<int, Phagocyte> clients;
+        List<Phagocyte> clients; //Old way
+        //public static Dictionary<int, Phagocyte> clients;
         public static Random randGen = new Random();
         public static Dictionary<int, Point> pellets;
         public static SQLiteConnection p_dbConnection;
@@ -41,7 +42,6 @@ namespace Server
             p_dbConnection.Open();
 
             //Create table
-            //For now, password will not be encrypted
             string sql = "CREATE TABLE playerData (username VARCHAR(20), password VARCHAR(20), score INT)";
             SQLiteCommand command = new SQLiteCommand(sql, p_dbConnection);
             command.ExecuteNonQuery();
@@ -56,7 +56,7 @@ namespace Server
             gameLoopRate.Interval = 15;
             gameLoopRate.Enabled = true;
 
-            clients = new Dictionary<int, Phagocyte>();
+            clients = new List<Phagocyte>(); //new Dictionary<int, Phagocyte>();
             pellets = new Dictionary<int, Point>();
 
 
@@ -85,45 +85,47 @@ namespace Server
             {
 
                 TcpClient newClient = listen.AcceptTcpClient();
-                clients.Add(clients.Count, new Phagocyte(newClient, clients.Count, randGen.Next(-2, 18), randGen.Next(-10, 10)));
-                clients[clients.Count - 1].sendMsg(gameState());
+                //For now, use old way
+                clients.Add(new Phagocyte(newClient));
+                //clients.Add(clients.Count, new Phagocyte(newClient, clients.Count, randGen.Next(-2, 18), randGen.Next(-10, 10)));
+                //clients[clients.Count - 1].sendMsg(gameState());
                 Console.Write("Client Connected!\n");
             }
         }
 
-        public byte[] gameState()
-        {
+        //public byte[] gameState()
+        //{
 
-            //Needs to send the player the positions and directions of all players
-            byte[] toSend = new byte[50];
-            //3 indicates player positions
-            toSend[0] = 2;
-            toSend[1] = (byte)Server.clients.Count;
+        //    //Needs to send the player the positions and directions of all players
+        //    byte[] toSend = new byte[50];
+        //    //3 indicates player positions
+        //    toSend[0] = 2;
+        //    toSend[1] = (byte)Server.clients.Count;
 
-            int counter = 0;
-            for (int i = 2; i <= Server.clients.Count * 6; i += 6)
-            {
-                toSend[i] = (byte)(Server.clients[i - (2 + counter)].myPNum);
-                toSend[i + 1] = (byte)(Server.clients[i - (2 + counter)].xDir);
-                toSend[i + 2] = (byte)(Server.clients[i - (2 + counter)].yDir);
-                toSend[i + 3] = (byte)(Server.clients[i - (2 + counter)].xpos);
-                toSend[i + 4] = (byte)(Server.clients[i - (2 + counter)].ypos);
-                toSend[i + 5] = (byte)(Server.clients[i - (2 + counter)].radius);
-            }
-            return toSend;
-        }
+        //    int counter = 0;
+        //    for (int i = 2; i <= Server.clients.Count * 6; i += 6)
+        //    {
+        //        toSend[i] = (byte)(Server.clients[i - (2 + counter)].myPNum);
+        //        toSend[i + 1] = (byte)(Server.clients[i - (2 + counter)].xDir);
+        //        toSend[i + 2] = (byte)(Server.clients[i - (2 + counter)].yDir);
+        //        toSend[i + 3] = (byte)(Server.clients[i - (2 + counter)].xpos);
+        //        toSend[i + 4] = (byte)(Server.clients[i - (2 + counter)].ypos);
+        //        toSend[i + 5] = (byte)(Server.clients[i - (2 + counter)].radius);
+        //    }
+        //    return toSend;
+        //}
 
-        public static void broadcast(byte[] msg)
-        {
-            for (int i = 0; i < clients.Count; i++)
-            {
-                clients[i].sendMsg(msg);
-            }
-        }
+        //public static void broadcast(byte[] msg)
+        //{
+        //    for (int i = 0; i < clients.Count; i++)
+        //    {
+        //        clients[i].sendMsg(msg);
+        //    }
+        //}
 
         private void gameLoop(object source, ElapsedEventArgs e)
         {
-            foreach (Phagocyte client in clients.Values)
+            foreach (Phagocyte client in clients)//.Values)
             {
                 client.move();
                 //if player collides with the wall
