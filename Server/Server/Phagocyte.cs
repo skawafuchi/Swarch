@@ -23,9 +23,8 @@ namespace Server
         Thread readWrite;
         byte[] read;
         int msgSize;
-        MD5 baseHash = MD5.Create();
 
-        public Phagocyte(object player, int pNum, int startX, int startY)
+        public Phagocyte(object player)//, int pNum, int startX, int startY)
         {
             myPNum = pNum;
             myPlayer = (TcpClient)player;
@@ -36,9 +35,15 @@ namespace Server
 
             read = new byte[50];
             xDir = yDir = 0;
+<<<<<<< HEAD
             xpos = startX;
             ypos = startY;
             radius = 0;
+=======
+            //xpos = startX;
+            //ypos = startY;
+
+>>>>>>> 4cdfc81f107b59c02278f7f2852da8eb59e7382b
         }
 
 
@@ -88,7 +93,7 @@ namespace Server
             toSend[1] = (byte)myPNum;
             System.Buffer.BlockCopy(toByteArray(xpos), 0, toSend, 2, 4);
             System.Buffer.BlockCopy(toByteArray(ypos), 0, toSend, 6, 4);
-            Server.broadcast(toSend);
+            //Server.broadcast(toSend);
         }
 
         private void readWriteLoop()
@@ -146,7 +151,7 @@ namespace Server
                                 {
                                     compare = (string)reader["password"];   
                                 }
-                                if (VerifyMd5Hash(baseHash, strPW, compare))
+                                if (strPW.Equals(compare))
                                 {
                                     toSend[1] = 1;
                                 }
@@ -162,8 +167,7 @@ namespace Server
                                 sql = "INSERT INTO playerData (username, password, score) VALUES (@username, @password, 0)";
                                 command = new SQLiteCommand(sql, Server.p_dbConnection);
                                 command.Parameters.AddWithValue("@username", strUN);
-                                string pwHash = GetMd5Hash(baseHash, strPW);
-                                command.Parameters.AddWithValue("@password", pwHash);
+                                command.Parameters.AddWithValue("@password", strPW);
                                 command.ExecuteNonQuery();
 
                                 //Print out table for testing
@@ -237,7 +241,7 @@ namespace Server
                             toSend[9] = byteCoord[2];
                             toSend[10] = byteCoord[3];
                             //send the player move to all clients!
-                            Server.broadcast(toSend);
+                            //Server.broadcast(toSend);
                         }
                     }
                     catch
@@ -246,47 +250,6 @@ namespace Server
                     }
 
                 }
-            }
-        }
-
-        //The following 2 methods were taken straight from the documentation
-        static string GetMd5Hash(MD5 md5Hash, string input)
-        {
-
-            // Convert the input string to a byte array and compute the hash. 
-            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-
-            // Create a new Stringbuilder to collect the bytes 
-            // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data  
-            // and format each one as a hexadecimal string. 
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-
-            // Return the hexadecimal string. 
-            return sBuilder.ToString();
-        }
-
-        // Verify a hash against a string. 
-        static bool VerifyMd5Hash(MD5 md5Hash, string input, string hash)
-        {
-            // Hash the input. 
-            string hashOfInput = GetMd5Hash(md5Hash, input);
-
-            // Create a StringComparer an compare the hashes.
-            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-
-            if (0 == comparer.Compare(hashOfInput, hash))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
     }
