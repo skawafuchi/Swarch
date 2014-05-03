@@ -15,7 +15,7 @@ public class LoginScript: MonoBehaviour {
 	GUIText title, UNLabel,PWLabel;
 	public static myNetwork net;
 	MD5 baseHash = MD5.Create();
-	
+	bool showErrorMsg = false;
 	string errMsg;
 	
 	void Start () {
@@ -75,10 +75,15 @@ public class LoginScript: MonoBehaviour {
 					System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (passwordHash),0,toSend,(Encoding.ASCII.GetBytes(userName).Length)+ 2,Encoding.ASCII.GetBytes(passwordHash).Length);
 					net.SendTCPPacket(toSend,0,toSend.Length);
 				}else{
-					errMsg = "Username/PW invalid";
-					GUI.Label(new Rect(0,0,100,100),errMsg);
+					showErrorMsg = true;
 				}
 			}
+		}
+		
+		if(showErrorMsg)
+		{
+			errMsg = "Username/password is too short! Please make both at least 5 characters long.";
+			GUI.Label(new Rect(0,0,1000,100),errMsg);
 		}
 		
 		//User name and PW fields 
