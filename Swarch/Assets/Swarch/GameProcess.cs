@@ -81,6 +81,8 @@ public class GameProcess : MonoBehaviour {
 				currentData = (byte[])net.data.Dequeue();
 				//response from server of client UN/PW sent
 				if (currentData[0] == 0){
+					//Denied
+					
 					//Was accepted
 					if (currentData[1] == 1){
 						pNum = currentData[2];			

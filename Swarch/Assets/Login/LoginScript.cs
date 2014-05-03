@@ -16,7 +16,7 @@ public class LoginScript: MonoBehaviour {
 	public static myNetwork net;
 	MD5 baseHash = MD5.Create();
 	bool showErrorMsg = false;
-	string errMsg;
+	public string errMsg;
 	
 	void Start () {
 		//UI MAY LOOK WEIRD IN UNITY PREVIEW WINDOW
@@ -50,6 +50,7 @@ public class LoginScript: MonoBehaviour {
 	}
 	
 	void OnGUI () {
+		
 		if (net.serverAppr){
 			Application.LoadLevel("Swarch");
 		}

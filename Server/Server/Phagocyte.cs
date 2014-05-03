@@ -24,7 +24,7 @@ namespace Server
         byte[] read;
         int msgSize;
 
-        public Phagocyte(object player)//, int pNum, int startX, int startY)
+        public Phagocyte(object player, int pNum, int startX, int startY)
         {
             myPNum = pNum;
             myPlayer = (TcpClient)player;
@@ -35,15 +35,12 @@ namespace Server
 
             read = new byte[50];
             xDir = yDir = 0;
-<<<<<<< HEAD
+
             xpos = startX;
             ypos = startY;
             radius = 0;
-=======
-            //xpos = startX;
-            //ypos = startY;
 
->>>>>>> 4cdfc81f107b59c02278f7f2852da8eb59e7382b
+
         }
 
 
@@ -93,7 +90,7 @@ namespace Server
             toSend[1] = (byte)myPNum;
             System.Buffer.BlockCopy(toByteArray(xpos), 0, toSend, 2, 4);
             System.Buffer.BlockCopy(toByteArray(ypos), 0, toSend, 6, 4);
-            //Server.broadcast(toSend);
+            Server.broadcast(toSend);
         }
 
         private void readWriteLoop()
@@ -229,19 +226,21 @@ namespace Server
                             toSend[1] = (byte)myPNum;
                             toSend[2] = read[2];
                             byte[] byteCoord = (toByteArray(xpos));
-                            //Console.WriteLine("Byte Array Length" + byteXPos.Length);
+
+                            //encode x position
                             toSend[3] = byteCoord[0];
                             toSend[4] = byteCoord[1];
                             toSend[5] = byteCoord[2];
                             toSend[6] = byteCoord[3];
 
+                            //encode y position
                             byteCoord = toByteArray(ypos);
                             toSend[7] = byteCoord[0];
                             toSend[8] = byteCoord[1];
                             toSend[9] = byteCoord[2];
                             toSend[10] = byteCoord[3];
                             //send the player move to all clients!
-                            //Server.broadcast(toSend);
+                            Server.broadcast(toSend);
                         }
                     }
                     catch

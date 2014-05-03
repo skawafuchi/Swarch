@@ -11,7 +11,7 @@ using System.Threading;
 
 public class myNetwork : MonoBehaviour {
 	
-	const string SERVER_ADDR = "192.168.1.5"; 
+	const string SERVER_ADDR = "192.168.1.78"; 
 	const int SERVER_PORT = 18503;
 	
 	public TcpClient client;
@@ -20,6 +20,8 @@ public class myNetwork : MonoBehaviour {
 	Thread t = null;
 	byte[] readData;	
 	public bool connected = false;
+	public bool pwInvalid = false;
+
 	
 	public Queue data;
 	
@@ -60,6 +62,10 @@ public class myNetwork : MonoBehaviour {
 					//flag to switch scenes
 					if (readData[0] == 0 && readData[1] == 1){
 						serverAppr = true;
+					}
+					
+					if (readData[0] == 0 && readData[1] == 0){
+						pwInvalid = true;
 					}
 					readData = new byte[50];
 				}
