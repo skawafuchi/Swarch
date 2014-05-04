@@ -125,7 +125,7 @@ namespace Server
                             //Need to trim off whitespace
                             strUN = strUN.TrimEnd('\0');
                             strPW = strPW.TrimEnd('\0');
-                            Console.WriteLine("username: " + strUN + "password: " + strPW);
+                            Console.WriteLine("username: " + strUN + " password: " + strPW);
 
                             byte[] toSend = new byte[50];
                             //toSend[1] is 0 if they are not allowed access, 1 if allowed

@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Timers;
 using System.Data.SQLite;
+using System.IO;
 
 namespace Server
 {
@@ -47,15 +48,19 @@ namespace Server
             clients = new Dictionary<int, Phagocyte>();
             pellets = new Dictionary<int, Point>();
 
-            //Create database file
-            SQLiteConnection.CreateFile("PhagocyteDatabase.sqlite");
+            //Create database file if one doesn't already exist
+            if (!File.Exists("PhagocyteDatabase.sqlite"))
+            {
+                Console.WriteLine("Making new db file!");
+                SQLiteConnection.CreateFile("PhagocyteDatabase.sqlite");
+            }
 
             //Open connection to database
             p_dbConnection = new SQLiteConnection("Data Source=PhagocyteDatabase.sqlite;Version=3;");
             p_dbConnection.Open();
 
             //Create table
-            string sql = "CREATE TABLE playerData (username VARCHAR(20), password VARCHAR(20), score INT)";
+            string sql = "CREATE TABLE IF NOT EXISTS playerData (username VARCHAR(20), password CHAR(32), score INT)";
             SQLiteCommand command = new SQLiteCommand(sql, p_dbConnection);
             command.ExecuteNonQuery();
 
@@ -227,6 +232,7 @@ namespace Server
                 }
 
             }
+
         }
     }
 
