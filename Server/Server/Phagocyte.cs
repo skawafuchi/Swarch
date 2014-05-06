@@ -75,7 +75,6 @@ namespace Server
             }
             catch(Exception e)
             {
-                inGame = false;
                 Server.removeClient(myPNum);
                 Console.WriteLine(e.Message + ": Unable to write message to client: " + myPNum);
             }
@@ -103,8 +102,8 @@ namespace Server
             {
                 if (netStream.DataAvailable)
                 {
-                    //try
-                    //{
+                    try
+                    {
                         msgSize = netStream.Read(read, 0, 50);
                         //first byte is a 0 then its a User name and password message
                         if (read[0] == 0)
@@ -121,8 +120,8 @@ namespace Server
                             //Need to trim off whitespace
                             strUN = strUN.TrimEnd('\0');
                             strPW = strPW.TrimEnd('\0');
-                            Console.WriteLine("username: " + strUN + " password: " + strPW);
                             clientName = strUN;
+
                             byte[] toSend = new byte[50];
                             //toSend[1] is 0 if they are not allowed access, 1 if allowed
                             //currently always allowing players to access
@@ -150,9 +149,8 @@ namespace Server
                                 }
                                 else
                                 {
-                                    //Print a message on Unity executable!
-                                    //For now just print to server console
-                                    Console.WriteLine("Please enter the correct password.");
+                                    Console.WriteLine("Wrong password was entered.");
+                                    toSend[1] = 0;
                                 }
                             }
                             else //Add player to table
@@ -264,14 +262,13 @@ namespace Server
                             Server.broadcast(toSend);
                         }else if (read[0] == 2)
                         {
-                            inGame = false;
                             Server.removeClient(myPNum);
                         }
-                 //   }
-                    //catch(Exception e)
-                    //{
-                    //    Console.WriteLine(e.Message);
-                    //}
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message + ": during phagocyte loop");
+                    }
 
                 }
             }

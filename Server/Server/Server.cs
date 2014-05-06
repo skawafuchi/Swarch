@@ -90,9 +90,14 @@ namespace Server
         public static void removeClient(int clientNum)
         {
             removedPlayers.Add(clientNum);
+            clients[clientNum].inGame = false;
             clients.Remove(clientNum);
+
             Console.WriteLine("Client Disconnected! Client size: " + clients.Count + " RemovedPlayer count: " + removedPlayers.Count);
-            //broadcast()
+            byte[] toSend = new byte[50];
+            toSend[0] = 5;
+            toSend[1] = (byte)clientNum;
+            broadcast(toSend);
 
         }
         //Constantly listen for and add new clients while the server is running
@@ -101,8 +106,8 @@ namespace Server
             listen.Start();
             while (true)
             {
-               // try
-                //{
+                try
+                {
                     TcpClient newClient = listen.AcceptTcpClient();
                     int addedPNum;
                     if (removedPlayers.Count == 0)
@@ -114,16 +119,15 @@ namespace Server
                     else
                     {
                         addedPNum = removedPlayers[0];
-                        Console.WriteLine("Client Connected! Client size: " + clients.Count + " RemovedPlayer count: " + removedPlayers.Count);
-                        clients.Add(removedPlayers[0], new Phagocyte(newClient, clients.Count, randGen.Next(-2, 18), randGen.Next(-10, 10)));
+                        Console.WriteLine("Client Connected! Client size: " + clients.Count + " RemovedPlayer count: " + removedPlayers.Count + "Client number given: " + removedPlayers[0]);
+                        clients.Add(removedPlayers[0], new Phagocyte(newClient, removedPlayers[0], randGen.Next(-2, 18), randGen.Next(-10, 10)));
                         removedPlayers.RemoveAt(0);
                         Console.WriteLine("State after connect Client size: " + clients.Count + " RemovedPlayer count: " + removedPlayers.Count);
                     }
-                    Console.Write("Client Connected!\n");
-               // }
-                //catch (Exception e) {
-                //    Console.WriteLine(e.Message);
-                //}
+                }
+                catch (Exception e) {
+                    Console.WriteLine(e.Message + ": on client add");
+                }
 
             }
         }
@@ -189,9 +193,12 @@ namespace Server
             foreach (int key in clients.Keys) { 
                 if (clients[key].inGame){
                     byte[] toSend = new byte[50];
-                    // toSend[0] = 
+                    toSend[0] = 8;
+                    toSend[1] = (byte)clients[key].myPNum;
+                    toSend[2] = (byte)clients[key].clientName.Length;
+                    System.Buffer.BlockCopy(Encoding.ASCII.GetBytes(clients[key].clientName), 0, toSend, 3, Encoding.ASCII.GetBytes(clients[key].clientName).Length);
 
-                    //clients[clientNum].sendMsg(toSend);
+                    clients[clientNum].sendMsg(toSend);
                 }
             }
         }
@@ -229,6 +236,44 @@ namespace Server
                     //check to see if collision
                     if (((client.xpos - clients[i].xpos) * (client.xpos - clients[i].xpos)) + ((client.ypos - clients[i].ypos) * (client.ypos - clients[i].ypos)) <= (Math.Pow((Math.Pow(1.2, client.radius) / 2) + (Math.Pow(1.2, clients[i].radius) / 2), 2)))
                     {
+                        //if the two players are the same size, reset them both
+                        if (client.radius == clients[i].radius) {
+
+                            client.resetPlayer();
+                            clients[i].resetPlayer();
+
+                        }
+
+                        else if (client.radius > clients[i].radius)
+                        {
+                            client.score += 10;
+                            client.radius++;
+
+                            byte[] toSend = new byte[50];
+                            toSend[0] = 6;
+                            toSend[1] = (byte)client.myPNum;
+                            toSend[2] = (byte)client.score;
+                            toSend[3] = (byte)client.radius;
+
+                            broadcast(toSend);
+
+                            clients[i].resetPlayer();
+                        }
+                        else {
+                            byte[] toSend = new byte[50];
+                            clients[i].score += 10;
+                            clients[i].radius++;
+
+                            toSend[0] = 6;
+                            toSend[1] = (byte)clients[i].myPNum;
+                            toSend[2] = (byte)clients[i].score;
+                            toSend[3] = (byte)clients[i].radius;
+
+                            broadcast(toSend);
+
+                            client.resetPlayer();
+
+                        }
                     }
                 }
             }
@@ -240,12 +285,12 @@ namespace Server
         {
             try
             {
-                for (int i = 0; i < clients.Count; i++)
+                foreach (int i in clients.Keys)
                 {
                     clients[i].sendMsg(msg);
                 }
             }catch(Exception e){
-                Console.WriteLine("Client disconnected yo we can't send them info");
+                Console.WriteLine(e.Message + ": on broadcast message");
             }
         }
 
