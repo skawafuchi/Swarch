@@ -11,7 +11,7 @@ Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Mana
 Loading C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\UnityEngine.dll into Unity Child Domain
 Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\Assembly-CSharp.dll (this message is harmless)
 Loading C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-- Completed reload, in  0.066 seconds
+- Completed reload, in  0.609 seconds
 desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
 <RI> Initializing input.
 XInput1_3.dll not found.
@@ -20,12 +20,12 @@ Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Mana
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
 
 Unloading 2 unused Assets to reduce memory usage. Loaded Objects now: 131.
-Total: 1.036545 ms (FindLiveObjects: 0.010130 ms CreateObjectMapping: 0.032822 ms MarkObjects: 0.218006 ms  DeleteObjects: 0.007699 ms)
+Total: 14.449642 ms (FindLiveObjects: 0.015398 ms CreateObjectMapping: 0.070507 ms MarkObjects: 0.200582 ms  DeleteObjects: 0.007699 ms)
 
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
 
 Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 124.
-Total: 0.886615 ms (FindLiveObjects: 0.009319 ms CreateObjectMapping: 0.015398 ms MarkObjects: 0.221248 ms  DeleteObjects: 0.005673 ms)
+Total: 0.929163 ms (FindLiveObjects: 0.008914 ms CreateObjectMapping: 0.015398 ms MarkObjects: 0.215575 ms  DeleteObjects: 0.006078 ms)
 
 The object was used after being disposed.
  

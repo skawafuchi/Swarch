@@ -15,8 +15,8 @@ public class LoginScript: MonoBehaviour {
 	GUIText title, UNLabel,PWLabel;
 	public static myNetwork net;
 	MD5 baseHash = MD5.Create();
-	bool showErrorMsg = false;
-	public string errMsg;
+	private bool showErrorMsg = false;
+	private string errMsg;
 	
 	void Start () {
 		//UI MAY LOOK WEIRD IN UNITY PREVIEW WINDOW
@@ -66,6 +66,7 @@ public class LoginScript: MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width/2 - 50,Screen.height/2 +10,100,20),"Login!")){
 				if (password.Length > 5 && userName.Length > 5){
 					byte[]toSend = new byte[50];
+					showErrorMsg = false;
 					
 					//Encrypt password
 					string passwordHash = GetMd5Hash(baseHash, password);
@@ -83,8 +84,12 @@ public class LoginScript: MonoBehaviour {
 		
 		if(showErrorMsg)
 		{
-			errMsg = "Username/password is too short! Please make both at least 5 characters long.";
+			errMsg = "Username/password is too short! Please make both more than 5 characters long.";
 			GUI.Label(new Rect(0,0,1000,100),errMsg);
+		}
+		if(net.pwInvalid && !showErrorMsg)//So that both don't display at once; priority given to the "too short"
+		{
+			GUI.Label(new Rect(0,0,1000,100),"You have entered the wrong password!");
 		}
 		
 		//User name and PW fields 

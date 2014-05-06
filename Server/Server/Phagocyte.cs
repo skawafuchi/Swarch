@@ -154,9 +154,8 @@ namespace Server
                                 }
                                 else
                                 {
-                                    //Print a message on Unity executable!
-                                    //For now just print to server console
-                                    Console.WriteLine("Please enter the correct password.");
+                                    Console.WriteLine("Wrong password was entered.");
+                                    toSend[1] = 0;
                                 }
                             }
                             else //Add player to table

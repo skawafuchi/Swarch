@@ -21,7 +21,6 @@ public class myNetwork : MonoBehaviour {
 	byte[] readData;	
 	public bool connected = false;
 	public bool pwInvalid = false;
-
 	
 	public Queue data;
 	
