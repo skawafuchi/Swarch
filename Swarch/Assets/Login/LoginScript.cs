@@ -66,14 +66,14 @@ public class LoginScript: MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width/2 - 50,Screen.height/2 +10,100,20),"Login!")){
 				if (password.Length > 5 && userName.Length > 5){
 					byte[]toSend = new byte[50];
-					
+					toSend[1] = (byte)Encoding.ASCII.GetBytes(userName).Length;
 					//Encrypt password
 					string passwordHash = GetMd5Hash(baseHash, password);
 					
 					//Encode username and password into a byte array
 					//username and PW separated by a 0 in the byte stream
-					System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (userName),0,toSend,1,Encoding.ASCII.GetBytes(userName).Length);
-					System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (passwordHash),0,toSend,(Encoding.ASCII.GetBytes(userName).Length)+ 2,Encoding.ASCII.GetBytes(passwordHash).Length);
+					System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (userName),0,toSend,2,Encoding.ASCII.GetBytes(userName).Length);
+					System.Buffer.BlockCopy(Encoding.ASCII.GetBytes (passwordHash),0,toSend,(Encoding.ASCII.GetBytes(userName).Length)+2,Encoding.ASCII.GetBytes(passwordHash).Length);
 					net.SendTCPPacket(toSend,0,toSend.Length);
 				}else{
 					showErrorMsg = true;

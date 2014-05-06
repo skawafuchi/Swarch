@@ -11,7 +11,7 @@ using System.Threading;
 
 public class myNetwork : MonoBehaviour {
 	
-	const string SERVER_ADDR = "192.168.1.5"; 
+	const string SERVER_ADDR = "192.168.1.78"; 
 	const int SERVER_PORT = 18503;
 	
 	public TcpClient client;
@@ -78,6 +78,10 @@ public class myNetwork : MonoBehaviour {
 	
 	public void Disconnect ()
 	{	
+		byte[] goodbyte = new byte[50];
+		goodbyte[0] = 2;
+		nws.Write(goodbyte,0,50);
+		
 		t.Abort();
 		nws.Close();
 		client.Close();

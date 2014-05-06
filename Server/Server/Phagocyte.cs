@@ -12,6 +12,7 @@ namespace Server
 {
     class Phagocyte
     {
+        public bool inGame;
         //Game variables
         public string clientName;
         public float radius, xpos, ypos;
@@ -26,6 +27,7 @@ namespace Server
 
         public Phagocyte(object player, int pNum, int startX, int startY)
         {
+            inGame = false;
             myPNum = pNum;
             myPlayer = (TcpClient)player;
             netStream = myPlayer.GetStream();
@@ -73,7 +75,9 @@ namespace Server
             }
             catch(Exception e)
             {
-                Console.WriteLine("Unable to write message to client: " + myPNum);
+                inGame = false;
+                Server.removeClient(myPNum);
+                Console.WriteLine(e.Message + ": Unable to write message to client: " + myPNum);
             }
         }
         
@@ -99,34 +103,26 @@ namespace Server
             {
                 if (netStream.DataAvailable)
                 {
-                    try
-                    {
+                    //try
+                    //{
                         msgSize = netStream.Read(read, 0, 50);
                         //first byte is a 0 then its a User name and password message
                         if (read[0] == 0)
                         {
                             //gets the index of the space inbetween username and password
-                            int indexOfParse = 0;
-                            for (int i = 1; i < msgSize; i++)
-                            {
-                                if (read[i] == 0)
-                                {
-                                    indexOfParse = i;
-                                    break;
-                                }
-                            }
+                            int indexOfParse = read[1];
                             //converts password and username from byte array to string
                             byte[] userName = new byte[indexOfParse];
                             byte[] password = new byte[msgSize - indexOfParse];
-                            System.Buffer.BlockCopy(read, 1, userName, 0, indexOfParse);
-                            System.Buffer.BlockCopy(read, indexOfParse + 1, password, 0, msgSize - indexOfParse - 1);
+                            System.Buffer.BlockCopy(read, 2, userName, 0, indexOfParse);
+                            System.Buffer.BlockCopy(read, indexOfParse + 2, password, 0, msgSize - indexOfParse - 2);
                             string strUN = Encoding.ASCII.GetString(userName);
                             string strPW = Encoding.ASCII.GetString(password);
                             //Need to trim off whitespace
                             strUN = strUN.TrimEnd('\0');
                             strPW = strPW.TrimEnd('\0');
                             Console.WriteLine("username: " + strUN + " password: " + strPW);
-
+                            clientName = strUN;
                             byte[] toSend = new byte[50];
                             //toSend[1] is 0 if they are not allowed access, 1 if allowed
                             //currently always allowing players to access
@@ -184,6 +180,7 @@ namespace Server
                             if (toSend[1] == 1)
                             {
                                 int counter = 0;
+                                toSend[2] = (byte)myPNum;
                                 for (int i = 3; i <= 11; i += 2)
                                 {
                                     toSend[i] = (byte)(Server.pellets[i - (3 + counter)].x + 2);
@@ -194,8 +191,32 @@ namespace Server
                                 //sends player position with hello command
                                 System.Buffer.BlockCopy(toByteArray(xpos), 0, toSend, 13, 4);
                                 System.Buffer.BlockCopy(toByteArray(ypos), 0, toSend, 17, 4);
+
                             }
                             netStream.Write(toSend, 0, 50);
+
+
+                            if (toSend[1] == 1){
+                                //Sends the player connect msg to everyone in the game
+                                inGame = true;
+                                sendMsg(Server.gameState());
+                                Server.sendNames(myPNum);
+
+
+                                byte[] helloMsg = new byte[50];
+                                helloMsg[0] = 4;
+                                helloMsg[1] = (byte)myPNum;
+                                System.Buffer.BlockCopy(toByteArray(xpos), 0, helloMsg, 2, 4);
+                                System.Buffer.BlockCopy(toByteArray(ypos), 0, helloMsg, 6, 4);
+                                helloMsg[10] = (byte)Encoding.ASCII.GetBytes(clientName).Length;
+                                System.Buffer.BlockCopy(Encoding.ASCII.GetBytes(clientName), 0, helloMsg, 11, Encoding.ASCII.GetBytes(clientName).Length);
+
+                                //Send the player the gamestate after connecting
+                                Server.broadcast(helloMsg);
+
+                            }
+
+
                         }
                         //first byte is a 1 then it's a move command
                         else if (read[0] == 1)
@@ -241,12 +262,16 @@ namespace Server
                             toSend[10] = byteCoord[3];
                             //send the player move to all clients!
                             Server.broadcast(toSend);
+                        }else if (read[0] == 2)
+                        {
+                            inGame = false;
+                            Server.removeClient(myPNum);
                         }
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Error Trying to Read");
-                    }
+                 //   }
+                    //catch(Exception e)
+                    //{
+                    //    Console.WriteLine(e.Message);
+                    //}
 
                 }
             }

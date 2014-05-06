@@ -1,31 +1,34 @@
 Initialize engine version: 4.1.2f1 (911c7369eeac)
 GfxDevice: creating device client; threaded=1
 Direct3D:
-    Version:  Direct3D 9.0c [igdumdx32.dll 8.15.10.2622]
-    Renderer: Intel(R) HD Graphics
-    Vendor:   Intel
-    VRAM:     880 MB (via DXGI)
-    Caps:     Shader=30 DepthRT=1 NativeDepth=1 NativeShadow=1 DF16=1 DF24=1 INTZ=1 RAWZ=0 NULL=1 RESZ=1 SlowINTZ=0
+    Version:  Direct3D 9.0c [nvd3dum.dll 9.18.13.1106]
+    Renderer: NVIDIA GeForce GTS 450
+    Vendor:   NVIDIA
+    VRAM:     978 MB (via DXGI)
+    Caps:     Shader=30 DepthRT=1 NativeDepth=1 NativeShadow=1 DF16=0 DF24=0 INTZ=1 RAWZ=0 NULL=1 RESZ=0 SlowINTZ=0
 Begin MonoManager ReloadAssembly
-Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-- Completed reload, in  0.066 seconds
-desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
+Platform assembly: C:\Users\sk\Documents\GitHub\Swarch\Swarch_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\sk\Documents\GitHub\Swarch\Swarch_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\sk\Documents\GitHub\Swarch\Swarch_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\sk\Documents\GitHub\Swarch\Swarch_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+- Completed reload, in  0.064 seconds
+desktop: 1920x1080 60Hz; virtual: 3840x1080 at 0,0
 <RI> Initializing input.
-XInput1_3.dll not found.
 <RI> Input initialized.
-Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\System.dll (this message is harmless)
+Platform assembly: C:\Users\sk\Documents\GitHub\Swarch\Swarch_Data\Managed\System.dll (this message is harmless)
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
 
-Unloading 2 unused Assets to reduce memory usage. Loaded Objects now: 131.
-Total: 1.036545 ms (FindLiveObjects: 0.010130 ms CreateObjectMapping: 0.032822 ms MarkObjects: 0.218006 ms  DeleteObjects: 0.007699 ms)
+Unloading 2 unused Assets to reduce memory usage. Loaded Objects now: 158.
+Total: 0.770020 ms (FindLiveObjects: 0.007680 ms CreateObjectMapping: 0.014977 ms MarkObjects: 0.226973 ms  DeleteObjects: 0.003840 ms)
 
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
 
-Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 124.
-Total: 0.886615 ms (FindLiveObjects: 0.009319 ms CreateObjectMapping: 0.015398 ms MarkObjects: 0.221248 ms  DeleteObjects: 0.005673 ms)
+Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 152.
+Total: 0.965117 ms (FindLiveObjects: 0.009601 ms CreateObjectMapping: 0.017282 ms MarkObjects: 0.228125 ms  DeleteObjects: 0.004224 ms)
+
+New Player name is : Default
+ 
+(Filename: C:/BuildAgent/work/7535de4ca26c26ac/Runtime/ExportGenerated/StandalonePlayer/UnityEngineDebug.cpp Line: 54)
 
 The object was used after being disposed.
  

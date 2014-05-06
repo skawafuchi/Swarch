@@ -35,7 +35,7 @@ namespace Server
         //Variables for network
         private TcpListener listen;
         Thread listenLoop;
-        List<int> removedPlayers;
+        static List<int> removedPlayers;
 
         public static Random randGen = new Random();
         //List<Phagocyte> clients; //Old way
@@ -45,6 +45,7 @@ namespace Server
 
         public Server(int port)
         {
+            removedPlayers = new List<int>();
             clients = new Dictionary<int, Phagocyte>();
             pellets = new Dictionary<int, Point>();
 
@@ -86,47 +87,113 @@ namespace Server
             }
         }
 
-
-        public void removeClient()
+        public static void removeClient(int clientNum)
         {
+            removedPlayers.Add(clientNum);
+            clients.Remove(clientNum);
+            Console.WriteLine("Client Disconnected! Client size: " + clients.Count + " RemovedPlayer count: " + removedPlayers.Count);
+            //broadcast()
 
         }
-
         //Constantly listen for and add new clients while the server is running
         private void addClient()
         {
             listen.Start();
             while (true)
             {
-                TcpClient newClient = listen.AcceptTcpClient();
-                //For now, use old way
-                //clients.Add(clients.Count,new Phagocyte(newClient));
-                clients.Add(clients.Count, new Phagocyte(newClient, clients.Count, randGen.Next(-2, 18), randGen.Next(-10, 10)));
-                //clients[clients.Count - 1].sendMsg(gameState());
-                Console.Write("Client Connected!\n");
+               // try
+                //{
+                    TcpClient newClient = listen.AcceptTcpClient();
+                    int addedPNum;
+                    if (removedPlayers.Count == 0)
+                    {
+                        addedPNum = clients.Count;
+                        Console.WriteLine("Client Connected! Player number given: " + clients.Count);
+                        clients.Add(clients.Count, new Phagocyte(newClient, clients.Count, randGen.Next(-2, 18), randGen.Next(-10, 10)));
+                    }
+                    else
+                    {
+                        addedPNum = removedPlayers[0];
+                        Console.WriteLine("Client Connected! Client size: " + clients.Count + " RemovedPlayer count: " + removedPlayers.Count);
+                        clients.Add(removedPlayers[0], new Phagocyte(newClient, clients.Count, randGen.Next(-2, 18), randGen.Next(-10, 10)));
+                        removedPlayers.RemoveAt(0);
+                        Console.WriteLine("State after connect Client size: " + clients.Count + " RemovedPlayer count: " + removedPlayers.Count);
+                    }
+                    Console.Write("Client Connected!\n");
+               // }
+                //catch (Exception e) {
+                //    Console.WriteLine(e.Message);
+                //}
+
             }
         }
 
-        public byte[] gameState()
+        //byte format of all current players, positions, scores, and radiuses
+        public static byte[] gameState()
         {
 
             //Needs to send the player the positions and directions of all players
             byte[] toSend = new byte[50];
             //3 indicates player positions
-            toSend[0] = 4;
-            toSend[1] = (byte)Server.clients.Count;
+            toSend[0] = 7;
+            int clientsInGame = 0;
 
-            int counter = 0;
-            for (int i = 2; i <= Server.clients.Count * 6; i += 6)
-            {
-                toSend[i] = (byte)(Server.clients[i - (2 + counter)].myPNum);
-                toSend[i + 1] = (byte)(Server.clients[i - (2 + counter)].xDir);
-                toSend[i + 2] = (byte)(Server.clients[i - (2 + counter)].yDir);
-                toSend[i + 3] = (byte)(Server.clients[i - (2 + counter)].xpos);
-                toSend[i + 4] = (byte)(Server.clients[i - (2 + counter)].ypos);
-                toSend[i + 5] = (byte)(Server.clients[i - (2 + counter)].radius);
+            foreach (int key in clients.Keys) {
+                if (clients[key].inGame) {
+                    clientsInGame++;
+                }
+            }
+
+            toSend[1] = (byte) clientsInGame;
+
+
+            int counter = 2;
+            foreach (int index in clients.Keys) {
+                if (clients[index].inGame)
+                {
+                    toSend[counter] = (byte)(clients[index].myPNum);
+                    toSend[++counter] = (byte)(clients[index].score);
+                    toSend[++counter] = (byte)(clients[index].radius);
+                    if (clients[index].xDir == 0 && clients[index].yDir == 1)
+                    {
+                        toSend[++counter] = 0;
+                    }
+                    else if (clients[index].xDir == 0 && clients[index].yDir == -1)
+                    {
+                        toSend[++counter] = 1;
+                    }
+                    else if (clients[index].xDir == -1 && clients[index].yDir == 0)
+                    {
+                        toSend[++counter] = 2;
+                    }
+                    else if (clients[index].xDir == 1 && clients[index].yDir == 0)
+                    {
+                        toSend[++counter] = 3;
+                    }
+                        //player isnt moving, still need to move the counter though
+                    else {
+                        toSend[++counter] = 4;
+                    }
+                    counter++;
+                    System.Buffer.BlockCopy(toByteArray(clients[index].xpos), 0, toSend, counter, 4);
+                    counter += 4;
+                    System.Buffer.BlockCopy(toByteArray(clients[index].ypos), 0, toSend, counter, 4);
+                    counter += 4;
+                }
             }
             return toSend;
+        }
+
+        //sends the player names of all currently connected players to the client number specified
+        public static void sendNames(int clientNum){
+            foreach (int key in clients.Keys) { 
+                if (clients[key].inGame){
+                    byte[] toSend = new byte[50];
+                    // toSend[0] = 
+
+                    //clients[clientNum].sendMsg(toSend);
+                }
+            }
         }
 
         //Method to check if a player hits a pellet
@@ -156,34 +223,29 @@ namespace Server
             }
         }
 
-        //public byte[] gameState()
-        //{
-
-        //    //Needs to send the player the positions and directions of all players
-        //    byte[] toSend = new byte[50];
-        //    //3 indicates player positions
-        //    toSend[0] = 2;
-        //    toSend[1] = (byte)Server.clients.Count;
-
-        //    int counter = 0;
-        //    for (int i = 2; i <= Server.clients.Count * 6; i += 6)
-        //    {
-        //        toSend[i] = (byte)(Server.clients[i - (2 + counter)].myPNum);
-        //        toSend[i + 1] = (byte)(Server.clients[i - (2 + counter)].xDir);
-        //        toSend[i + 2] = (byte)(Server.clients[i - (2 + counter)].yDir);
-        //        toSend[i + 3] = (byte)(Server.clients[i - (2 + counter)].xpos);
-        //        toSend[i + 4] = (byte)(Server.clients[i - (2 + counter)].ypos);
-        //        toSend[i + 5] = (byte)(Server.clients[i - (2 + counter)].radius);
-        //    }
-        //    return toSend;
-        //}
-
+        private void checkPlayers(Phagocyte client) {
+            foreach (int i in clients.Keys) {
+                if (clients[i].inGame && i != client.myPNum) {
+                    //check to see if collision
+                    if (((client.xpos - clients[i].xpos) * (client.xpos - clients[i].xpos)) + ((client.ypos - clients[i].ypos) * (client.ypos - clients[i].ypos)) <= (Math.Pow((Math.Pow(1.2, client.radius) / 2) + (Math.Pow(1.2, clients[i].radius) / 2), 2)))
+                    {
+                    }
+                }
+            }
+        
+        }
+        
         //helper function that sends a specified message to all clients
         public static void broadcast(byte[] msg)
         {
-            for (int i = 0; i < clients.Count; i++)
+            try
             {
-                clients[i].sendMsg(msg);
+                for (int i = 0; i < clients.Count; i++)
+                {
+                    clients[i].sendMsg(msg);
+                }
+            }catch(Exception e){
+                Console.WriteLine("Client disconnected yo we can't send them info");
             }
         }
 
@@ -211,7 +273,11 @@ namespace Server
                         }
 
                         //checks if player eats any of the pellets and sends out data
-                        checkPellet(client);
+                        if (client.inGame)
+                        {
+                            checkPellet(client);
+                            checkPlayers(client);
+                        }
                     }
 
                     lastUpdate += UPDATE_TIME;
@@ -234,6 +300,21 @@ namespace Server
             }
 
         }
+
+
+        //helper class that converts a floating point decimal into a byte array
+        private static byte[] toByteArray(float value)
+        {
+            byte[] bytes = System.BitConverter.GetBytes(value);
+            return bytes;
+        }
+
+        //Helper class that converts a byte array (length 4) to a floating point decimal
+        private static float toFloat(byte[] bytes)
+        {
+            return System.BitConverter.ToSingle(bytes, 0);
+        }
+
     }
 
 

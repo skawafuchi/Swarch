@@ -48,6 +48,7 @@
      <Compile Include="Assets\Login\myNetwork.cs" />
      <Compile Include="Assets\Swarch\GameProcess.cs" />
      <Compile Include="Assets\Swarch\Nucleus.cs" />
+     <Compile Include="Assets\Swarch\Opponent.cs" />
      <Compile Include="Assets\Swarch\Player.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -17,4 +17,3 @@ public class Nucleus : MonoBehaviour
 		transform.localPosition = new Vector3(-0.08f,0.05f,0f);
 	}
 }
-
