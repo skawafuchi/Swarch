@@ -5,8 +5,6 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Data.SQLite;
-using System.Security.Cryptography;
 
 namespace Server
 {
@@ -127,22 +125,11 @@ namespace Server
                             //currently always allowing players to access
 
                             //Check to see if player is in database
-                            string sql = "SELECT COUNT(*) FROM playerData WHERE username=@username";
-                            SQLiteCommand command = new SQLiteCommand(sql, Server.p_dbConnection);
-                            command.Parameters.AddWithValue("@username", strUN);
-                            int count = Convert.ToInt32(command.ExecuteScalar());
+                            int count = Server.oursqlite.numberOfUsernameMatches(strUN);
                             if (count > 0) //If in database,
                             {
                                 //Check if passwords match
-                                string compare = "";
-                                sql = "SELECT password FROM playerData WHERE username=@username";
-                                command = new SQLiteCommand(sql, Server.p_dbConnection);
-                                command.Parameters.AddWithValue("@username", strUN);
-                                SQLiteDataReader reader = command.ExecuteReader();
-                                while (reader.Read())
-                                {
-                                    compare = (string)reader["password"];   
-                                }
+                                string compare = Server.oursqlite.getPassword(strUN);
                                 if (strPW.Equals(compare))
                                 {
                                     toSend[1] = 1;
@@ -155,21 +142,10 @@ namespace Server
                             }
                             else //Add player to table
                             {
-                                sql = "INSERT INTO playerData (username, password, score) VALUES (@username, @password, 0)";
-                                command = new SQLiteCommand(sql, Server.p_dbConnection);
-                                command.Parameters.AddWithValue("@username", strUN);
-                                command.Parameters.AddWithValue("@password", strPW);
-                                command.ExecuteNonQuery();
+                                Server.oursqlite.addToTable(strUN, strPW);
 
                                 //Print out table for testing
-                                sql = "SELECT * FROM playerData";
-                                command = new SQLiteCommand(sql, Server.p_dbConnection);
-                                SQLiteDataReader reader = command.ExecuteReader();
-                                while (reader.Read())
-                                {
-                                    Console.WriteLine("Username: " + reader["username"] + " | Password: "
-                                        + reader["password"] + " | Score: " + reader["score"]);
-                                }
+                                Server.oursqlite.printTable();
 
                                 toSend[1] = 1;
                            }
