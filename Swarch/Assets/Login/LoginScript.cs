@@ -17,6 +17,8 @@ public class LoginScript: MonoBehaviour {
 	MD5 baseHash = MD5.Create();
 	private bool showErrorMsg = false;
 	private string errMsg;
+	public GUIStyle style = null;
+	public GUIStyle errorStyle = null;
 	
 	void Start () {
 		//UI MAY LOOK WEIRD IN UNITY PREVIEW WINDOW
@@ -56,14 +58,14 @@ public class LoginScript: MonoBehaviour {
 		}
 		
 		if (!net.connected){
-			if (GUI.Button (new Rect(Screen.width/2 - 50,Screen.height/2 +40,100,20),"Connect!")){
+			if (GUI.Button (new Rect(Screen.width/2 - 50,Screen.height/2 +40,100,20),"Connect!", style)){
 				net.Connect();
 			}
 		}
 		
 		//login button, changes scenes to Swarch Game
 		if (net.connected){
-			if (GUI.Button(new Rect(Screen.width/2 - 50,Screen.height/2 +10,100,20),"Login!")){
+			if (GUI.Button(new Rect(Screen.width/2 - 50,Screen.height/2 +10,100,20),"Login!", style)){
 				if (password.Length > 5 && userName.Length > 5){
 					byte[]toSend = new byte[50];
 					toSend[1] = (byte)Encoding.ASCII.GetBytes(userName).Length;
@@ -85,11 +87,11 @@ public class LoginScript: MonoBehaviour {
 		if(showErrorMsg)
 		{
 			errMsg = "Username/password is too short! Please make both more than 5 characters long.";
-			GUI.Label(new Rect(0,0,1000,100),errMsg);
+			GUI.Label(new Rect(0,0,100,100),errMsg, errorStyle);
 		}
 		if(net.pwInvalid && !showErrorMsg)//So that both don't display at once; priority given to the "too short"
 		{
-			GUI.Label(new Rect(0,0,1000,100),"You have entered the wrong password!");
+			GUI.Label(new Rect(0,0,100,100),"You have entered the wrong password!", errorStyle);
 		}
 		
 		//User name and PW fields 

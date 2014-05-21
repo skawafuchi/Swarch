@@ -76,6 +76,15 @@ namespace Server
             command.ExecuteNonQuery();
         }
 
+        public void updateScore(string username, int score)
+        {
+            string sql = "UPDATE playerData SET score=@score WHERE username=@username";
+            SQLiteCommand command = new SQLiteCommand(sql, this.p_dbConnection);
+            command.Parameters.AddWithValue("@score", score);
+            command.Parameters.AddWithValue("@username", username);
+            command.ExecuteNonQuery();
+        }
+
         public void printTable()
         {
             string sql = "SELECT * FROM playerData";

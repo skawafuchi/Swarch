@@ -9,3 +9,4 @@ C:\Users\sk\Documents\GitHub\Server\Server\obj\x86\Debug\Server.csprojResolveAss
 C:\Users\sk\Documents\GitHub\Server\Server\bin\Debug\Server.exe
 C:\Users\sk\Documents\GitHub\Server\Server\bin\Debug\Server.pdb
 C:\Users\sk\Documents\GitHub\Server\Server\bin\Debug\System.Data.SQLite.dll
+C:\Users\tams\Documents\GitHub\Swarch\Server\Server\obj\x86\Debug\Server.csprojResolveAssemblyReference.cache
