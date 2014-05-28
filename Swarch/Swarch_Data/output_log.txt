@@ -11,7 +11,7 @@ Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Mana
 Loading C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\UnityEngine.dll into Unity Child Domain
 Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\Assembly-CSharp.dll (this message is harmless)
 Loading C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-- Completed reload, in  0.087 seconds
+- Completed reload, in  0.102 seconds
 desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
 <RI> Initializing input.
 XInput1_3.dll not found.
@@ -20,10 +20,26 @@ Platform assembly: C:\Users\tams\Documents\GitHub\Swarch\Swarch\Swarch_Data\Mana
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
 
 Unloading 6 unused Assets to reduce memory usage. Loaded Objects now: 85.
-Total: 1.081119 ms (FindLiveObjects: 0.008509 ms CreateObjectMapping: 0.026339 ms MarkObjects: 0.236646 ms  DeleteObjects: 0.042953 ms)
+Total: 1.894390 ms (FindLiveObjects: 0.015803 ms CreateObjectMapping: 0.043763 ms MarkObjects: 0.487476 ms  DeleteObjects: 0.098467 ms)
 
-A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
- : OnConnect
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 167.
+Total: 2.885146 ms (FindLiveObjects: 0.054299 ms CreateObjectMapping: 0.047005 ms MarkObjects: 0.612283 ms  DeleteObjects: 0.016613 ms)
+
+Unloading 1 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 161.
+Total: 1.829961 ms (FindLiveObjects: 0.025528 ms CreateObjectMapping: 0.037685 ms MarkObjects: 0.439255 ms  DeleteObjects: 0.013372 ms)
+
+SocketException: An existing connection was forcibly closed by the remote host.
+
+  at System.Net.Sockets.Socket.Send (System.Byte[] buf, Int32 offset, Int32 size, SocketFlags flags) [0x00000] in <filename unknown>:0 
+  at System.Net.Sockets.NetworkStream.Write (System.Byte[] buffer, Int32 offset, Int32 size) [0x00000] in <filename unknown>:0 
+Rethrow as IOException: Write failure
+  at System.Net.Sockets.NetworkStream.Write (System.Byte[] buffer, Int32 offset, Int32 size) [0x00000] in <filename unknown>:0 
+  at myNetwork.Disconnect () [0x00000] in <filename unknown>:0 
+  at GameProcess.OnApplicationQuit () [0x00000] in <filename unknown>:0 
  
-(Filename: C:/BuildAgent/work/7535de4ca26c26ac/Runtime/ExportGenerated/StandalonePlayer/UnityEngineDebug.cpp Line: 54)
+(Filename:  Line: -1)
 
