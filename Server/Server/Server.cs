@@ -341,6 +341,7 @@ namespace Server
                     now = DateTime.Now.TimeOfDay.TotalMilliseconds * 1000000;
                 }
 
+                WebServer.updateHighscorePage();
             }
 
         }

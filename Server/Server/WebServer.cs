@@ -6,11 +6,18 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Server
 {
     class WebServer
     {
-        public static void updateHighscorePage()
+
+        public WebServer()
+        {
+            WebServerThread();
+        }
+
+        public static string updateHighscorePage()
         {
             string response = "<table border=\"1\" style=\"width:300px\"><tr><th>User</th><th>Highscore</th></tr>";
 
@@ -18,10 +25,17 @@ namespace Server
             SQLiteCommand command = new SQLiteCommand(sql, Server.oursqlite.p_dbConnection);
             SQLiteDataReader reader = command.ExecuteReader();
             while (reader.Read())
-                response += ("<tr><td>" + reader["username"] + "</td><td>" + reader["score"] + "</td></tr>"); 
+                response += ("<tr><td>" + reader["username"] + "</td><td>" + reader["score"] + "</td></tr>");
             response += "</table>";
 
-            SimpleListenerExample(new string[] {"http://localhost:8080/test/"}, response);
+
+            return response;
+        }
+
+        public void WebServerThread()
+        {
+            while (true)
+                SimpleListenerExample(new string[] { "http://localhost:8080/test/" }, updateHighscorePage());
         }
 
         //Taken from HttpListener Class documentation example

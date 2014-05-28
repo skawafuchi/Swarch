@@ -14,7 +14,7 @@ namespace Server
             int port = 18503;
             Server x = new Server(port);
             Console.WriteLine("Opened a server on port: " + port);
-            WebServer.updateHighscorePage();
+            WebServer y = new WebServer(new string[] { "http://localhost:8080/test/" });
         }
     }
 
