@@ -87,6 +87,7 @@ namespace Server
 
         public void printTable()
         {
+            Console.WriteLine("------------------------------------------");
             string sql = "SELECT * FROM playerData";
             SQLiteCommand command = new SQLiteCommand(sql, this.p_dbConnection);
             SQLiteDataReader reader = command.ExecuteReader();

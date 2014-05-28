@@ -197,6 +197,9 @@ namespace Server
                 if (((client.xpos - pellets[i].x)*(client.xpos - pellets[i].x)) + ((client.ypos - pellets[i].y)*(client.ypos - pellets[i].y)) <= (Math.Pow((Math.Pow(1.2,client.radius)/2)+0.5,2))){
                     client.score++;
                     client.radius++;
+                    //Update client's score in database
+                    oursqlite.updateScore(client.clientName, client.score);
+                    oursqlite.printTable();
 
                     pellets[i] = new Point(randGen.Next(-2, 18), randGen.Next(-10, 10));
                     byte[] toSend = new byte[50];
@@ -228,7 +231,10 @@ namespace Server
 
                             client.resetPlayer();
                             clients[i].resetPlayer();
-
+                            //Update scores in database.
+                            //Must do this for all clients involved
+                            oursqlite.updateScore(client.clientName, client.score);
+                            oursqlite.updateScore(clients[i].clientName, clients[i].score);
                         }
 
                         else if (client.radius > clients[i].radius)
@@ -245,6 +251,8 @@ namespace Server
                             broadcast(toSend);
 
                             clients[i].resetPlayer();
+                            oursqlite.updateScore(client.clientName, client.score);
+                            oursqlite.updateScore(clients[i].clientName, clients[i].score);
                         }
                         else {
                             byte[] toSend = new byte[50];
@@ -259,8 +267,10 @@ namespace Server
                             broadcast(toSend);
 
                             client.resetPlayer();
-
+                            oursqlite.updateScore(client.clientName, client.score);
+                            oursqlite.updateScore(clients[i].clientName, clients[i].score);
                         }
+                        oursqlite.printTable();
                     }
                 }
             }
@@ -302,6 +312,8 @@ namespace Server
                         if (((client.xpos - 10.5) * (client.xpos - 10.5)) + ((client.ypos - 1) * (client.ypos - 1)) > (Math.Pow((Math.Pow(1.2, client.radius) / 2) - 20, 2)))
                         {
                             client.resetPlayer();
+                            oursqlite.updateScore(client.clientName, client.score);
+                            oursqlite.printTable();
                         }
 
                         //checks if player eats any of the pellets and sends out data
