@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Phagocyte.cs" />
+    <Compile Include="WebServer.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="myMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

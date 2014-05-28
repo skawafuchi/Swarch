@@ -9,7 +9,7 @@ namespace Server
 {
     class OurSQLite
     {
-        private SQLiteConnection p_dbConnection;
+        public SQLiteConnection p_dbConnection;
 
         public OurSQLite()
         {
