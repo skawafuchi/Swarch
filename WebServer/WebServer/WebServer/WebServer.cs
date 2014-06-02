@@ -7,13 +7,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Server
+namespace WebServer
 {
     class WebServer
     {
+        private static SQLiteConnection web_dbConnection;
 
         public WebServer()
         {
+            web_dbConnection = new SQLiteConnection("Data Source=PhagocyteDatabase.sqlite;Version=3;");
+            web_dbConnection.Open();
             WebServerThread();
         }
 
@@ -22,7 +25,7 @@ namespace Server
             string response = "<table border=\"1\" style=\"width:300px\"><tr><th>User</th><th>Highscore</th></tr>";
 
             string sql = "select * from playerData order by score desc";
-            SQLiteCommand command = new SQLiteCommand(sql, Server.oursqlite.p_dbConnection);
+            SQLiteCommand command = new SQLiteCommand(sql, web_dbConnection);
             SQLiteDataReader reader = command.ExecuteReader();
             while (reader.Read())
                 response += ("<tr><td>" + reader["username"] + "</td><td>" + reader["score"] + "</td></tr>");

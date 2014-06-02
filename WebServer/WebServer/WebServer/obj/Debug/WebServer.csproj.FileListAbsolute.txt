@@ -1,0 +1,7 @@
+C:\Users\tams\Documents\GitHub\Swarch\WebServer\WebServer\WebServer\bin\Debug\WebServer.exe.config
+C:\Users\tams\Documents\GitHub\Swarch\WebServer\WebServer\WebServer\obj\Debug\WebServer.csprojResolveAssemblyReference.cache
+C:\Users\tams\Documents\GitHub\Swarch\WebServer\WebServer\WebServer\bin\Debug\WebServer.exe
+C:\Users\tams\Documents\GitHub\Swarch\WebServer\WebServer\WebServer\bin\Debug\WebServer.pdb
+C:\Users\tams\Documents\GitHub\Swarch\WebServer\WebServer\WebServer\bin\Debug\System.Data.SQLite.dll
+C:\Users\tams\Documents\GitHub\Swarch\WebServer\WebServer\WebServer\obj\Debug\WebServer.exe
+C:\Users\tams\Documents\GitHub\Swarch\WebServer\WebServer\WebServer\obj\Debug\WebServer.pdb
