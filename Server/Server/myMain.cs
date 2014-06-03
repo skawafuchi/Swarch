@@ -14,7 +14,6 @@ namespace Server
             int port = 18503;
             Server x = new Server(port);
             Console.WriteLine("Opened a server on port: " + port);
-            //WebServer y = new WebServer();
         }
     }
 

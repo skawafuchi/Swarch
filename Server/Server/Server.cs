@@ -305,23 +305,31 @@ namespace Server
                 while (now - lastUpdate > UPDATE_TIME && updateCount < MAX_RENDER)
                 {
                     //Update
-                    foreach (Phagocyte client in clients.Values)
-                    {
-                        client.move();
-                        //if player collides with the wall
-                        if (((client.xpos - 10.5) * (client.xpos - 10.5)) + ((client.ypos - 1) * (client.ypos - 1)) > (Math.Pow((Math.Pow(1.2, client.radius) / 2) - 20, 2)))
+                    try{
+                        foreach (Phagocyte client in clients.Values)
                         {
-                            client.resetPlayer();
-                            oursqlite.updateScore(client.clientName, client.score);
-                            oursqlite.printTable();
-                        }
+                            if (client.inGame)
+                            {
+                                client.move();
+                                //if player collides with the wall
+                                if ((((client.xpos - 10.5) * (client.xpos - 10.5)) + ((client.ypos - 1) * (client.ypos - 1)) > (Math.Pow((Math.Pow(1.2, client.radius) / 2) - 20, 2))) || client.radius >= 20)
+                                {
+                                    client.resetPlayer();
+                                    oursqlite.updateScore(client.clientName, client.score);
+                                    oursqlite.printTable();
+                                }
+                                else
+                                {
+                                    checkPellet(client);
+                                    checkPlayers(client);
+                                }
+                            }
 
-                        //checks if player eats any of the pellets and sends out data
-                        if (client.inGame)
-                        {
-                            checkPellet(client);
-                            checkPlayers(client);
+                            //checks if player eats any of the pellets and sends out data
+
                         }
+                    }catch(Exception e){
+                        Console.WriteLine("On game loop: "+ e.Message);
                     }
 
                     lastUpdate += UPDATE_TIME;

@@ -67,6 +67,20 @@ namespace Server
             return password;
         }
 
+        public int getScore(string username) {
+            int score = 0;
+            string sql = "SELECT score FROM playerData WHERE username=@username";
+            SQLiteCommand command = new SQLiteCommand(sql, this.p_dbConnection);
+            command.Parameters.AddWithValue("@username", username);
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                score = (int)reader["score"];
+            }
+            return score;
+        
+        }
+
         public void addToTable(string username, string password)
         {
             string sql = "INSERT INTO playerData (username, password, score) VALUES (@username, @password, 0)";

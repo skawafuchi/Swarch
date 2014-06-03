@@ -11,7 +11,7 @@ using System.Threading;
 
 public class myNetwork : MonoBehaviour {
 	
-	const string SERVER_ADDR = "169.234.25.227"; //"192.168.1.5"; 
+	const string SERVER_ADDR = "192.168.1.80"; //"169.234.25.227"; 
 	const int SERVER_PORT = 18503;
 	
 	public TcpClient client;
